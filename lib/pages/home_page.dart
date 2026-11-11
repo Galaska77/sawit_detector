@@ -261,14 +261,16 @@ class HomePage extends StatelessWidget {
                   itemCount: ForwardChainingEngine.diseases.length,
                   itemBuilder: (context, index) {
                     final disease = ForwardChainingEngine.diseases[index];
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Material(
                         color: const Color(0xFF152A1C),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xFF223E2A), width: 1),
-                      ),
-                      child: Theme(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          side: const BorderSide(color: Color(0xFF223E2A), width: 1),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Theme(
                         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
                         child: ExpansionTile(
                           iconColor: const Color(0xFF10B981),
@@ -337,7 +339,8 @@ class HomePage extends StatelessWidget {
                           ],
                         ),
                       ),
-                    );
+                    ),
+                  );
                   },
                 ),
               ],
