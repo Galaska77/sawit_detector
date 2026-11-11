@@ -36,7 +36,17 @@ jobs:
         run: flutter pub get
 
       - name: Run static analysis
-        run: flutter analyze
+        run: |
+          set +e
+          flutter analyze > analyze.log 2>&1
+          EXIT_CODE=$?
+          cat analyze.log
+          if [ $EXIT_CODE -ne 0 ]; then
+            while IFS= read -r line; do
+              [ -n "$line" ] && echo "::error::$line"
+            done < analyze.log
+          fi
+          exit $EXIT_CODE
 
       - name: Run unit & widget tests
         run: flutter test
