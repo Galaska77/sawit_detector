@@ -145,7 +145,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                     border: Border.all(color: const Color(0xFF223E2A), width: 1.5),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: Colors.black.withValues(alpha: 0.2),
                         blurRadius: 10,
                         offset: const Offset(0, 5),
                       ),
@@ -158,7 +158,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF10B981).withOpacity(0.1),
+                          color: const Color(0xFF10B981).withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
@@ -275,7 +275,7 @@ class _DiagnosisPageState extends State<DiagnosisPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         elevation: 3,
-                        shadowColor: const Color(0xFF10B981).withOpacity(0.3),
+                        shadowColor: const Color(0xFF10B981).withValues(alpha: 0.3),
                       ),
                       child: const Text(
                         'YA',

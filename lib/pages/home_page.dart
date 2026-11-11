@@ -69,7 +69,7 @@ class HomePage extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         const Color(0xFF1B3A26),
-                        const Color(0xFF0F2617).withOpacity(0.9),
+                        const Color(0xFF0F2617).withValues(alpha: 0.9),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -78,7 +78,7 @@ class HomePage extends StatelessWidget {
                     border: Border.all(color: const Color(0xFF2B5637), width: 1.5),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withValues(alpha: 0.3),
                         blurRadius: 15,
                         offset: const Offset(0, 8),
                       ),
@@ -92,7 +92,7 @@ class HomePage extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF10B981).withOpacity(0.2),
+                              color: const Color(0xFF10B981).withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(color: const Color(0xFF10B981), width: 1),
                             ),
@@ -167,7 +167,7 @@ class HomePage extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               elevation: 4,
-                              shadowColor: const Color(0xFF10B981).withOpacity(0.4),
+                              shadowColor: const Color(0xFF10B981).withValues(alpha: 0.4),
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -366,7 +366,7 @@ class HomePage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.1),
+              color: iconColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: iconColor, size: 24),
