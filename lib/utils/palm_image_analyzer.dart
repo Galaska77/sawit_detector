@@ -487,12 +487,12 @@ class PalmImageAnalyzer {
         relYellow < 0.15 &&
         relDryBrown < 0.08 &&
         relDarkRot < 0.05 &&
-        haloSpotRatio < 0.015 &&
+        haloSpotRatio < 0.010 &&
         scatteredSpotRatio < 0.03;
 
     if (!isClearlyHealthy) {
       // G12: Bercak coklat kehitaman dikelilingi warna kuning (halo) -> Antraknosa (P05)
-      if (haloSpotRatio >= 0.015 && relGreen >= 0.25) {
+      if (haloSpotRatio >= 0.010 && relGreen >= 0.25) {
         detectedSymptoms.add('G12');
       }
 

@@ -49,7 +49,17 @@ jobs:
           exit $EXIT_CODE
 
       - name: Run unit & widget tests
-        run: flutter test
+        run: |
+          set +e
+          flutter test > test.log 2>&1
+          EXIT_CODE=$?
+          cat test.log
+          if [ $EXIT_CODE -ne 0 ]; then
+            while IFS= read -r line; do
+              [ -n "$line" ] && echo "::error::$line"
+            done < test.log
+          fi
+          exit $EXIT_CODE
 
       - name: Build Android Release APK
         run: flutter build apk --release
