@@ -448,11 +448,19 @@ class PalmImageAnalyzer {
         if (c == _PixelClass.darkRot) {
           bool nearYellow = false;
           bool nearGreen = false;
-          for (int dy = -2; dy <= 2; dy++) {
-            for (int dx = -2; dx <= 2; dx++) {
-              final _PixelClass nb = classes[(gy + dy) * gridW + (gx + dx)];
-              if (nb == _PixelClass.yellowLeaf) nearYellow = true;
-              if (nb == _PixelClass.greenLeaf) nearGreen = true;
+          for (int dy = -4; dy <= 4; dy++) {
+            final int ny = gy + dy;
+            if (ny < 0 || ny >= gridH) continue;
+            for (int dx = -4; dx <= 4; dx++) {
+              final int nx = gx + dx;
+              if (nx < 0 || nx >= gridW) continue;
+              final _PixelClass nb = classes[ny * gridW + nx];
+              if (nb == _PixelClass.yellowLeaf && dx.abs() <= 2 && dy.abs() <= 2) {
+                nearYellow = true;
+              }
+              if (nb == _PixelClass.greenLeaf) {
+                nearGreen = true;
+              }
             }
           }
           if (nearYellow && nearGreen) {

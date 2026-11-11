@@ -51,13 +51,13 @@ jobs:
       - name: Run unit & widget tests
         run: |
           set +e
-          flutter test > test.log 2>&1
+          flutter test -r expanded > test.log 2>&1
           EXIT_CODE=$?
           cat test.log
           if [ $EXIT_CODE -ne 0 ]; then
-            while IFS= read -r line; do
-              [ -n "$line" ] && echo "::error::$line"
-            done < test.log
+            grep -E "(\[E\]|Expected:|Actual:|Which:|═══|FAILED|Error|Exception)" test.log | head -n 10 | while IFS= read -r line; do
+              echo "::error::$line"
+            done
           fi
           exit $EXIT_CODE
 
