@@ -55,7 +55,7 @@ jobs:
           EXIT_CODE=$?
           cat test.log
           if [ $EXIT_CODE -ne 0 ]; then
-            grep -E "(\[E\]|The following|Expected:|Actual:|Which:|RenderFlex|overflowed)" test.log | head -n 10 | while IFS= read -r line; do
+            grep -A 2 -E "(The following assertion was thrown:|The following message was thrown:|\[E\])" test.log | grep -v -E "^(--|The following assertion was thrown:|The following message was thrown:)$" | head -n 10 | while IFS= read -r line; do
               echo "::error::$line"
             done
           fi
