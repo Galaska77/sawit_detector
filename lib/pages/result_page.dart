@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../utils/forward_chaining.dart';
 import '../utils/palm_image_analyzer.dart';
