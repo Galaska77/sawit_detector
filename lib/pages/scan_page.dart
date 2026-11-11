@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../utils/forward_chaining.dart';
 import '../utils/palm_image_analyzer.dart';
 import 'result_page.dart';
@@ -14,9 +15,10 @@ class ScanPage extends StatefulWidget {
 
 class _ScanPageState extends State<ScanPage>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  // Camera variables
+  // Camera & gallery variables
   List<CameraDescription> _cameras = [];
   CameraController? _cameraController;
+  final ImagePicker _imagePicker = ImagePicker();
   bool _isCameraInitialized = false;
   bool _hasCameraError = false;
   String _cameraErrorMessage = '';
@@ -195,6 +197,43 @@ class _ScanPageState extends State<ScanPage>
     }
   }
 
+  Future<void> _pickFromGalleryAndAnalyze() async {
+    if (_isScanning) return;
+
+    try {
+      final XFile? picked = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 90,
+      );
+      if (picked == null || !mounted) return;
+
+      final Uint8List bytes = await picked.readAsBytes();
+      if (!mounted) return;
+
+      if (_isFlashOn && _cameraController != null) {
+        try {
+          await _cameraController!.setFlashMode(FlashMode.off);
+        } catch (_) {}
+      }
+
+      setState(() {
+        _isScanning = true;
+        _scanningStatus = 'Membaca gambar dari galeri...';
+        _scanningProgress = 0.1;
+      });
+
+      await _runVisualAnalysisPipeline(bytes);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isScanning = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal memilih gambar dari galeri: $e')),
+      );
+    }
+  }
+
   Future<void> _runVisualAnalysisPipeline(Uint8List imageBytes) async {
     setState(() {
       _capturedImageBytes = imageBytes;
@@ -325,7 +364,7 @@ class _ScanPageState extends State<ScanPage>
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Sistem hanya menganalisis objek pelepah atau helai daun kelapa sawit. Objek selain sawit (wajah, tembok, benda lain) akan otomatis ditolak.',
+                  'Arahkan kamera atau pilih gambar dari galeri khusus objek pelepah/daun sawit. Objek selain sawit (wajah, tembok, benda lain) akan otomatis ditolak.',
                   style: TextStyle(
                     color: Colors.grey[400],
                     fontSize: 12,
@@ -518,26 +557,60 @@ class _ScanPageState extends State<ScanPage>
                 ),
                 const SizedBox(height: 16),
 
-                // Shutter Button
-                ElevatedButton.icon(
-                  onPressed: _isCameraInitialized ? _takePictureAndAnalyze : null,
-                  icon: const Icon(Icons.photo_camera),
-                  label: const Text(
-                    'AMBIL FOTO & ANALISIS',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF10B981),
-                    disabledBackgroundColor: const Color(0xFF1B3524),
-                    disabledForegroundColor: Colors.grey[500],
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size(double.infinity, 54),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                // Action Buttons: Galeri & Kamera
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: OutlinedButton.icon(
+                        onPressed: _pickFromGalleryAndAnalyze,
+                        icon: const Icon(
+                          Icons.photo_library_outlined,
+                          color: Color(0xFF10B981),
+                          size: 20,
+                        ),
+                        label: const Text(
+                          'Galeri',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Color(0xFF10B981), width: 1.5),
+                          minimumSize: const Size(double.infinity, 54),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
                     ),
-                    elevation: 5,
-                    shadowColor: const Color(0xFF10B981).withValues(alpha: 0.3),
-                  ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 3,
+                      child: ElevatedButton.icon(
+                        onPressed: _isCameraInitialized ? _takePictureAndAnalyze : null,
+                        icon: const Icon(Icons.photo_camera),
+                        label: const Text(
+                          'Ambil Foto',
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF10B981),
+                          disabledBackgroundColor: const Color(0xFF1B3524),
+                          disabledForegroundColor: Colors.grey[500],
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(double.infinity, 54),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 5,
+                          shadowColor: const Color(0xFF10B981).withValues(alpha: 0.3),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ] else ...[
                 // SCANNING ACTIVE STATE

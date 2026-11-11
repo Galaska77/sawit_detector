@@ -49,6 +49,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Kamera digunakan untuk memindai pelepah kelapa sawit guna mendeteksi gejala penyakit.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Galeri digunakan untuk memilih foto pelepah kelapa sawit yang akan dianalisis.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
