@@ -11,9 +11,12 @@ on:
       - master
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   analyze_test_and_build:
-    name: Analyze, Test & Build Android APK
+    name: Analyze, Test & Build APK + Web
     runs-on: ubuntu-latest
 
     steps:
@@ -70,3 +73,26 @@ jobs:
           name: sawit-detector-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
           retention-days: 14
+
+      - name: Build Web App
+        run: flutter build web --release
+
+      - name: Upload Web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sawit-detector-web
+          path: build/web
+          retention-days: 14
+
+      - name: Publish Web build to web-build branch
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        run: |
+          cd build/web
+          touch .nojekyll
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b web-build
+          git add -A
+          git commit -m "Build Flutter Web untuk ${GITHUB_SHA}"
+          git push --force "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" web-build:web-build
